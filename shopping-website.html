@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>UrbanCart | GPS Location Enabled Shopping</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fb;
+      color: #1e1e2a;
+      line-height: 1.4;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* location banner */
+    .location-banner {
+      background: #eef2ff;
+      border-radius: 40px;
+      padding: 10px 20px;
+      margin: 16px 0 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.85rem;
+    }
+
+    .location-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .location-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 10px;
+      background: #94a3b8;
+    }
+
+    .location-dot.active {
+      background: #22c55e;
+      box-shadow: 0 0 5px #22c55e;
+    }
+
+    .loc-btn {
+      background: #2463eb;
+      border: none;
+      color: white;
+      padding: 6px 16px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+
+    .loc-btn:hover {
+      background: #0f4bcb;
+    }
+
+    .header {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 16px 0;
+      gap: 16px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2463eb, #1a4fc3);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .search-bar {
+      flex: 1;
+      max-width: 420px;
+      display: flex;
+      background: #f1f3f8;
+      border-radius: 60px;
+      padding: 4px 8px;
+      align-items: center;
+    }
+
+    .search-bar input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .search-bar button {
+      background: #2463eb;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .cart-icon {
+      cursor: pointer;
+      background: #f0f2f6;
+      padding: 10px 18px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .cart-count {
+      background: #e53e3e;
+      color: white;
+      font-size: 0.75rem;
+      border-radius: 30px;
+      padding: 2px 8px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #f0f5ff 0%, #e9effa 100%);
+      margin: 24px 0 32px;
+      border-radius: 32px;
+      padding: 40px 32px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1f2b48, #2463eb);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .category-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 32px;
+      justify-content: center;
+    }
+
+    .chip {
+      background: white;
+      border: 1px solid #e2e8f0;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chip.active, .chip:hover {
+      background: #2463eb;
+      border-color: #2463eb;
+      color: white;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 30px;
+      margin: 32px 0 60px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      transition: 0.25s;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+      border: 1px solid #edf2f7;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 36px -12px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-img {
+      background: #f9fafc;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.8rem;
+    }
+
+    .product-info {
+      padding: 18px;
+    }
+
+    .product-category {
+      font-size: 0.7rem;
+      background: #eef2ff;
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 30px;
+      font-weight: 600;
+      color: #2463eb;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 10px 0 16px;
+    }
+
+    .add-btn {
+      width: 100%;
+      background: #1e293b;
+      border: none;
+      padding: 12px 0;
+      border-radius: 40px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .add-btn:hover {
+      background: #2463eb;
+    }
+
+    /* cart sidebar */
+    .cart-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(3px);
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.25s;
+      z-index: 200;
+    }
+
+    .cart-sidebar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 420px;
+      max-width: 90vw;
+      height: 100%;
+      background: white;
+      z-index: 201;
+      transform: translateX(100%);
+      transition: transform 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .cart-sidebar.active {
+      transform: translateX(0);
+    }
+
+    .cart-header {
+      padding: 24px;
+      border-bottom: 1px solid #eef2f6;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+
+    .close-cart {
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+    }
+
+    .cart-items-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 12px;
+      background: #fafcff;
+      border-radius: 20px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #edf2f7;
+    }
+
+    .cart-item-img {
+      font-size: 2rem;
+      background: #f1f5f9;
+      width: 55px;
+      height: 55px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cart-item-details {
+      flex: 1;
+    }
+
+    .item-qty {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .qty-btn {
+      background: #eef2ff;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .cart-footer {
+      padding: 20px;
+      border-top: 2px solid #eef2f6;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+    }
+
+    .checkout-btn {
+      background: #2463eb;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 40px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 32px;
+      color: #5b6e8c;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 680px) {
+      .navbar { flex-direction: column; align-items: stretch; }
+      .search-bar { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="container">
+    <div class="navbar">
+      <div class="logo">📍 UrbanCart</div>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products...">
+        <button id="searchBtn">Search</button>
+      </div>
+      <div class="cart-icon" id="cartIconBtn">
+        🛒 Cart <span class="cart-count" id="cartCountBadge">0</span>
+      </div>
+    </div>
+    <!-- GPS Location Banner -->
+    <div class="location-banner" id="locationBanner">
+      <div class="location-status">
+        <span class="location-dot" id="locationDot"></span>
+        <span id="locationText">🌍 Location access: Not requested</span>
+      </div>
+      <button class="loc-btn" id="requestLocationBtn">📍 Share my location</button>
+    </div>
+  </div>
+</div>
+
+<main class="container">
+  <div class="hero">
+    <h1>Smart Shopping with GPS ✨</h1>
+    <p>Allow location to get personalized delivery estimates (your coordinates will be sent to our server securely).</p>
+  </div>
+  <div class="category-filter" id="categoryFilterContainer"></div>
+  <div id="productsContainer" class="products-grid"></div>
+</main>
+
+<footer>
+  <p>© 2025 UrbanCart — GPS enabled | Server endpoint: localhost:4444</p>
+</footer>
+
+<div id="cartOverlay" class="cart-overlay"></div>
+<div id="cartSidebar" class="cart-sidebar">
+  <div class="cart-header">
+    Your Cart 🛍️
+    <button class="close-cart" id="closeCartBtn">&times;</button>
+  </div>
+  <div id="cartItemsList" class="cart-items-list">
+    <div class="empty-cart-msg" style="text-align:center; padding:40px;">Cart is empty</div>
+  </div>
+  <div class="cart-footer">
+    <div class="total-row"><span>Total:</span><span id="cartTotalAmount">₹0</span></div>
+    <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<script>
+  // ---------- PRODUCT DATA ----------
+  const products = [
+    { id: 1, name: "Premium Leather Backpack", category: "bags", price: 3499, emoji: "🎒", tags: ["leather", "bag"] },
+    { id: 2, name: "Wireless Noise Buds", category: "electronics", price: 1999, emoji: "🎧", tags: ["wireless", "audio"] },
+    { id: 3, name: "Minimalist Analog Watch", category: "accessories", price: 2899, emoji: "⌚", tags: ["watch"] },
+    { id: 4, name: "Cotton Oversized Tee", category: "clothing", price: 1299, emoji: "👕", tags: ["cotton"] },
+    { id: 5, name: "Slim Fit Denim Jeans", category: "clothing", price: 2499, emoji: "👖", tags: ["denim"] },
+    { id: 6, name: "Smart LED Desk Lamp", category: "electronics", price: 1599, emoji: "💡", tags: ["lamp"] },
+    { id: 7, name: "Leather Card Holder", category: "accessories", price: 899, emoji: "👛", tags: ["leather"] },
+    { id: 8, name: "Running Sneakers", category: "footwear", price: 3999, emoji: "👟", tags: ["sneakers"] },
+    { id: 9, name: "Classic Sunglasses", category: "accessories", price: 1799, emoji: "🕶️", tags: ["sunglasses"] },
+    { id: 10, name: "Laptop Sleeve 14\"", category: "bags", price: 999, emoji: "💼", tags: ["laptop"] },
+    { id: 11, name: "Bamboo Cutting Board", category: "home", price: 799, emoji: "🍳", tags: ["kitchen"] },
+    { id: 12, name: "Ceramic Coffee Mug", category: "home", price: 449, emoji: "☕", tags: ["mug"] }
+  ];
+
+  // ---------- STATE ----------
+  let cart = [];
+  let activeCategory = "all";
+  let searchQuery = "";
+  let userLocation = null;        // store { lat, lng }
+  let locationSentToServer = false;
+
+  // DOM elements
+  const productsContainer = document.getElementById("productsContainer");
+  const categoryFilterContainer = document.getElementById("categoryFilterContainer");
+  const searchInput = document.getElementById("searchInput");
+  const searchBtn = document.getElementById("searchBtn");
+  const cartIconBtn = document.getElementById("cartIconBtn");
+  const cartOverlay = document.getElementById("cartOverlay");
+  const cartSidebar = document.getElementById("cartSidebar");
+  const closeCartBtn = document.getElementById("closeCartBtn");
+  const cartItemsList = document.getElementById("cartItemsList");
+  const cartTotalAmountSpan = document.getElementById("cartTotalAmount");
+  const cartCountBadge = document.getElementById("cartCountBadge");
+  const checkoutBtn = document.getElementById("checkoutBtn");
+  const requestLocationBtn = document.getElementById("requestLocationBtn");
+  const locationTextSpan = document.getElementById("locationText");
+  const locationDot = document.getElementById("locationDot");
+
+  // ------------- GPS + SERVER SENDING (PORT 4444) -------------
+  // Function to send GPS coordinates to server at localhost:4444
+  async function sendLocationToServer(latitude, longitude) {
+    const payload = {
+      timestamp: new Date().toISOString(),
+      coordinates: {
+        lat: latitude,
+        lng: longitude
+      },
+      userAgent: navigator.userAgent,
+      page: "UrbanCart Shopping"
+    };
+
+    console.log("📡 Attempting to send location to server:", payload);
+
+    // Show sending status in banner
+    locationTextSpan.innerHTML = "📡 Sending coordinates to server...";
+    
+    try {
+      // Using fetch with POST to port 4444
+      // Note: This will fail if server is not running, but we handle gracefully
+      const response = await fetch("http://localhost:4444/api/location", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload),
+        mode: "cors",        // enable CORS
+        cache: "no-cache"
+      });
+      
+      if (response.ok) {
+        const result = await response.json().catch(() => ({}));
+        console.log("✅ Server response:", result);
+        locationTextSpan.innerHTML = "✅ Location sent to server! Coordinates shared.";
+        locationSentToServer = true;
+        // change dot to green and keep active
+        locationDot.classList.add("active");
+        // optional: show small tooltip for 3 seconds then revert message but keep success style
+        setTimeout(() => {
+          if (userLocation) {
+            locationTextSpan.innerHTML = `📍 Location active: ${latitude.toFixed(4)}, ${longitude.toFixed(4)} (sent to server)`;
+          }
+        }, 2500);
+      } else {
+        console.warn("⚠️ Server responded with status:", response.status);
+        locationTextSpan.innerHTML = "⚠️ Server error (port 4444). Check if server is running.";
+        locationDot.classList.remove("active");
+      }
+    } catch (error) {
+      console.error("❌ Failed to send location to localhost:4444:", error);
+      locationTextSpan.innerHTML = "❌ Cannot reach server at port 4444. Make sure server is listening.";
+      locationDot.classList.remove("active");
+      // Still keep the location but highlight connection error
+    }
+  }
+
+  // Get GPS using browser Geolocation API
+  function requestUserLocation() {
+    if (!navigator.geolocation) {
+      locationTextSpan.innerHTML = "⚠️ Geolocation not supported by your browser.";
+      alert("Your browser does not support geolocation. Cannot send coordinates.");
+      return;
+    }
+    
+    locationTextSpan.innerHTML = "📍 Requesting GPS access...";
+    locationDot.classList.remove("active");
+    
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        userLocation = { lat: latitude, lng: longitude };
+        console.log("📍 GPS obtained:", latitude, longitude);
+        
+        // Update UI banner
+        locationTextSpan.innerHTML = `📍 GPS: ${latitude.toFixed(5)}, ${longitude.toFixed(5)} — sending to server...`;
+        locationDot.classList.add("active");
+        
+        // Send coordinates to server on port 4444 (as JSON)
+        await sendLocationToServer(latitude, longitude);
+        
+        // Also store in localStorage for page refresh? optional
+        localStorage.setItem("userLat", latitude);
+        localStorage.setItem("userLng", longitude);
+        localStorage.setItem("locationShared", "true");
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        let errorMsg = "❌ Location denied or error.";
+        if (error.code === 1) errorMsg = "❌ Permission denied. Allow location to send coordinates.";
+        else if (error.code === 2) errorMsg = "❌ Position unavailable.";
+        else if (error.code === 3) errorMsg = "❌ Timeout.";
+        locationTextSpan.innerHTML = errorMsg;
+        locationDot.classList.remove("active");
+        alert(`${errorMsg} Cannot send GPS to server.`);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  }
+  
+  // Optional: auto request on page load? but we'll let user click button for transparency.
+  // But you can also uncomment to auto-ask: but better to have manual consent.
+  // However as per requirement: "jab koi user mere website par aye aur location permission allow kare" 
+  // means when they allow, coordinates sent. We provide button to trigger allow. 
+  // But we also can auto-trigger on load? We'll keep manual for good UX but also we can do on page load with a small delay? 
+  // For better demo: automatically ask on load? 
+  // Let's implement an auto-check: if user hasn't shared yet, show banner button. But some browsers block auto prompt, so button works.
+  // However we can add an auto-prompt after 1 second? but best to keep user-initiated.
+  // But I will also add an option to try to load previously stored location and resend if needed.
+  
+  function tryLoadStoredLocationAndResend() {
+    const savedLat = localStorage.getItem("userLat");
+    const savedLng = localStorage.getItem("userLng");
+    if (savedLat && savedLng && !userLocation) {
+      userLocation = { lat: parseFloat(savedLat), lng: parseFloat(savedLng) };
+      locationTextSpan.innerHTML = `📍 Restored location: ${savedLat}, ${savedLng}. Resending to server...`;
+      locationDot.classList.add("active");
+      sendLocationToServer(parseFloat(savedLat), parseFloat(savedLng));
+    }
+  }
+  
+  // ---------- CART FUNCTIONS ----------
+  function saveCart() { localStorage.setItem("urbanCart", JSON.stringify(cart)); }
+  
+  function loadCart() {
+    const saved = localStorage.getItem("urbanCart");
+    if (saved) { try { cart = JSON.parse(saved); } catch(e) { cart = []; } }
+    else { cart = []; }
+    updateCartUI();
+  }
+  
+  function updateCartUI() {
+    const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
+    cartCountBadge.innerText = totalItems;
+    const totalPrice = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+    cartTotalAmountSpan.innerText = `₹${totalPrice.toLocaleString('en-IN')}`;
+    if (cart.length === 0) {
+      cartItemsList.innerHTML = `<div class="empty-cart-msg" style="text-align:center; padding:40px;">Your cart is empty 😢</div>`;
+      return;
+    }
+    cartItemsList.innerHTML = "";
+    cart.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "cart-item";
+      div.innerHTML = `
+        <div class="cart-item-img">${item.emoji || "🛍️"}</div>
+        <div class="cart-item-details">
+          <div><strong>${escapeHtml(item.name)}</strong></div>
+          <div>₹${item.price.toLocaleString()}</div>
+          <div class="item-qty">
+            <button class="qty-btn" data-id="${item.id}" data-delta="-1">−</button>
+            <span>${item.quantity}</span>
+            <button class="qty-btn" data-id="${item.id}" data-delta="1">+</button>
+            <button class="qty-btn" data-id="${item.id}" data-delta="remove">🗑️</button>
+          </div>
+        </div>
+      `;
+      cartItemsList.appendChild(div);
+    });
+    document.querySelectorAll(".qty-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const pid = parseInt(btn.dataset.id);
+        const delta = btn.dataset.delta;
+        if (delta === "remove") removeFromCart(pid);
+        else updateQuantity(pid, parseInt(delta));
+        e.stopPropagation();
+      });
+    });
+  }
+  
+  function updateQuantity(productId, delta) {
+    const idx = cart.findIndex(i => i.id === productId);
+    if (idx !== -1) {
+      const newQty = cart[idx].quantity + delta;
+      if (newQty <= 0) cart.splice(idx, 1);
+      else cart[idx].quantity = newQty;
+      saveCart();
+      updateCartUI();
+      renderProducts();
+    }
+  }
+  function removeFromCart(productId) {
+    cart = cart.filter(i => i.id !== productId);
+    saveCart();
+    updateCartUI();
+    renderProducts();
+  }
+  function addToCart(product) {
+    const existing = cart.find(i => i.id === product.id);
+    if (existing) existing.quantity++;
+    else cart.push({ id: product.id, name: product.name, price: product.price, quantity: 1, emoji: product.emoji });
+    saveCart();
+    updateCartUI();
+    renderProducts();
+  }
+  function isInCartQty(pid) { return cart.find(i => i.id === pid)?.quantity || 0; }
+  
+  function getFilteredProducts() {
+    let filtered = [...products];
+    if (activeCategory !== "all") filtered = filtered.filter(p => p.category === activeCategory);
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.tags.some(t => t.includes(q)));
+    }
+    return filtered;
+  }
+  
+  function renderProducts() {
+    const filtered = getFilteredProducts();
+    if (filtered.length === 0) { productsContainer.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:60px;">No products found</div>`; return; }
+    productsContainer.innerHTML = "";
+    filtered.forEach(p => {
+      const qtyInCart = isInCartQty(p.id);
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <div class="product-img">${p.emoji}</div>
+        <div class="product-info">
+          <div class="product-category">${p.category}</div>
+          <div style="font-weight:600;">${escapeHtml(p.name)}</div>
+          <div class="price">₹${p.price.toLocaleString()}</div>
+          <button class="add-btn" data-id="${p.id}">${qtyInCart > 0 ? `✓ In Cart (${qtyInCart})` : "➕ Add to Cart"}</button>
+        </div>
+      `;
+      productsContainer.appendChild(card);
+    });
+    document.querySelectorAll(".add-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const pid = parseInt(btn.dataset.id);
+        const prod = products.find(x => x.id === pid);
+        if (prod) addToCart(prod);
+      });
+    });
+  }
+  
+  function buildCategories() {
+    const cats = ["all", ...new Set(products.map(p => p.category))];
+    categoryFilterContainer.innerHTML = "";
+    cats.forEach(cat => {
+      const chip = document.createElement("div");
+      chip.className = `chip ${activeCategory === cat ? "active" : ""}`;
+      chip.textContent = cat === "all" ? "All Items" : cat.charAt(0).toUpperCase() + cat.slice(1);
+      chip.addEventListener("click", () => { activeCategory = cat; buildCategories(); renderProducts(); });
+      categoryFilterContainer.appendChild(chip);
+    });
+  }
+  
+  function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+  
+  function performSearch() { searchQuery = searchInput.value.trim(); renderProducts(); }
+  
+  function openCart() { cartOverlay.classList.add("active"); cartSidebar.classList.add("active"); updateCartUI(); }
+  function closeCart() { cartOverlay.classList.remove("active"); cartSidebar.classList.remove("active"); }
+  function handleCheckout() {
+    if (cart.length === 0) alert("Cart is empty!");
+    else alert(`Order placed! 🎉 Total: ₹${cart.reduce((s,i)=>s+(i.price*i.quantity),0).toLocaleString()}\n${userLocation ? "Delivery will be optimized using your shared GPS." : "Enable location for better delivery estimates."}`);
+  }
+  
+  // Event binding
+  function bindEvents() {
+    searchBtn.addEventListener("click", performSearch);
+    searchInput.addEventListener("keyup", (e) => { if(e.key === "Enter") performSearch(); });
+    cartIconBtn.addEventListener("click", openCart);
+    closeCartBtn.addEventListener("click", closeCart);
+    cartOverlay.addEventListener("click", closeCart);
+    checkoutBtn.addEventListener("click", handleCheckout);
+    requestLocationBtn.addEventListener("click", requestUserLocation);
+  }
+  
+  // Initialization
+  function init() {
+    loadCart();
+    buildCategories();
+    renderProducts();
+    bindEvents();
+    // Try to restore previously sent location & resend to server if exists
+    tryLoadStoredLocationAndResend();
+  }
+  
+  init();
+</script>
+</body>
+</html>
